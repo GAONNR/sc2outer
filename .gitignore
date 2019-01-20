@@ -4,3 +4,4 @@ generated-csr.txt
 generated-private-key.txt
 *.pem
 .DS_Store
+secrets.js
