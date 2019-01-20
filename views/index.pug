@@ -1,0 +1,48 @@
+extends layout
+
+block content
+  link(rel='stylesheet', href='/stylesheets/style.css')
+  .container.about-body
+    .about-title
+      h1.pink-text=title
+      p 개인방송용 스타크래프트II MMR/전적 표시기
+    .content.row
+      div(style='width: 100%; text-align: center;')
+        image(src='/images/scouter.jpg' alt='scouter')
+      .col.s12
+        .card
+          .card-content
+            span.card-title 사용하기
+
+            if user
+              p #{user.battletag}님 안녕하세요!
+                br
+                a(href='/logout') 로그아웃하기
+                br
+                br
+                span URL: 
+                code#appurl user.id
+                script.
+                  $(document).ready(function() {
+                    $('#appurl').text('https://' + window.location.host + '/user/#{user.id}');
+                  });
+                span &larr; 이 링크를 복사하고 방송 프로그램에 붙여 넣으세요!
+                br
+                span &#8251; 웬만하면 링크를 다른 사람에게 알려 주지 마세요! 악용의 소지가 있습니다.
+            else
+              p
+                a(href='/auth/bnet') Battle.net 로그인하기
+            
+            br
+            p &#8251; 주의사항
+            li 현재 한국 서버만 지원합니다.
+            li 1v1 순위전 MMR/티어/전적 정보만 제공합니다.
+            li 새로고침 간격은 5분입니다.
+            li 리그 떠나기 등의 이유로 특정 데이터가 잡히지 않을 수 있습니다. (starcraft2.com 프로필 페이지 > 래더에서 종족 마크가 안 보이면 여기서도 해당 데이터가 안 보여요 ㅠㅠ)
+      
+    div.donate
+      h4.pink-text 후원
+      a.waves-effect.waves-ligh.btn.blue(href='https://twip.kr/gaon0403') 기부해 주시면 큰 힘이 됩니다.
+    
+    div(style='text-align: right; margin-bottom: 20px;') &#9400;김가온
+    

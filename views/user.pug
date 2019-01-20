@@ -1,0 +1,119 @@
+extends layout
+
+block content
+  link(rel='stylesheet', href='/stylesheets/app-style.css')
+  .settings
+    h4 설정
+    .container
+      .row
+        .col.s12.m3
+          a.waves-effect.waves-light.btn.red(style='width: 100%', onclick='updateOnClick("terran")') 테란
+        .col.s12.m3
+          a.waves-effect.waves-light.btn.purple(style='width: 100%', onclick='updateOnClick("zerg")') 저그
+        .col.s12.m3
+          a.waves-effect.waves-light.btn.blue(style='width: 100%', onclick='updateOnClick("protoss")') 프로토스
+        .col.s12.m3
+          a.waves-effect.waves-light.btn.green(style='width: 100%', onclick='updateOnClick("random")') 랜덤
+      .row
+        .col.s12
+          input#opac(type="range", name="opac", min="0", max="100", value="100", onchange="changeOpacity(this.value)")
+      .row
+        .col.s12.m6
+          a.waves-effect.waves-light.btn.blue(style='width: 100%', onclick='setBackground(true)') 흰 카드 배경
+        .col.s12.m6
+          a.waves-effect.waves-light.btn.green(style='width: 100%', onclick='setBackground(false)') 투명 배경
+  .app-body
+    .match-card
+      h4#nickname.pink-text 닉네임
+      div(style='display: flex; align-items: center;')
+        .match-card-tier
+          img(src="/images/tiers/UNRANKED.png", alt="tier").tier-img#tier-img
+        .card-vertical-line
+        .match-card-stat
+          h4(style='padding-top: 6%;') MMR:&nbsp;
+            span#mmr 0
+          p.race-and-tier
+            span#race 랜덤
+            span &nbsp;|&nbsp;
+            span#tier Unranked
+          p(style='top: 50%;')
+            span 전적:&nbsp;
+            span#total 0
+            span 전 
+            span#wins 0
+            span 승 
+            span#losses 0
+            span 패
+    
+    script.
+      var apiUrl = `https://${window.location.host}/api/#{userId}`;
+      var tierToImgUrl = {
+        '1v1 그랜드마스터': 'GRANDMASTER',
+        '1v1 마스터': 'MASTER',
+        '1v1 다이아몬드': 'DIAMOND',
+        '1v1 플래티넘': 'PLATINUM',
+        '1v1 골드': 'GOLD',
+        '1v1 실버': 'SILVER',
+        '1v1 브론즈': 'BRONZE'
+      }
+      var races = ['terran', 'zerg', 'protoss', 'random'];
+      var race = 'random';
+      var apiData;
+
+      var changeOpacity = function(val) {
+        var opac = parseInt(val) / 100;
+        $('.match-card').css('opacity', opac);
+      }
+
+      var updateFromAPI = function(apiUrl, isFirst) {
+        $.get(apiUrl, data => {
+          apiData = data;
+          $('#nickname').text(data.name);
+
+          if (isFirst) {
+            race = getHighestRace(data);
+            updateOnClick(race);
+          }
+        });
+      }
+
+      var getHighestRace = function(data) {
+        var max = 0;
+        var race = 'random';
+        for (var raceName of races) {
+          console.log(raceName);
+          var mmr = data[raceName].mmr ? data[raceName].mmr : 0;
+          if (mmr > max) {
+            max = mmr;
+            race = raceName;
+          }
+        }
+        return race;
+      }
+
+      var updateOnClick = function(race) {
+        $('#race').text(race);
+        $('#tier').text(apiData[race].tier ? apiData[race].tier : 'UNRANKED');
+        $('#tier-img').attr('src', apiData[race].tier ? `/images/tiers/${tierToImgUrl[apiData[race].tier]}.png` : '/images/tiers/UNRANKED.png')
+        $('#mmr').text(apiData[race].mmr ? apiData[race].mmr : 0);
+        $('#total').text(apiData[race].wins ? apiData[race].wins + apiData[race].losses : 0);
+        $('#wins').text(apiData[race].wins ? apiData[race].wins : 0);
+        $('#losses').text(apiData[race].losses ? apiData[race].losses : 0);
+      }
+
+      var setBackground = function(opt) {
+        if (opt) {
+          $('.match-card').removeClass('noback');
+
+        } else {
+          $('.match-card').addClass('noback');
+        }
+      }
+
+      $(document).ready(function() {
+        var data = updateFromAPI(apiUrl, true);
+        setInterval(() => {
+          updateFromAPI(apiUrl, false);
+        }, 1000 * 60 * 5);
+      });
+      

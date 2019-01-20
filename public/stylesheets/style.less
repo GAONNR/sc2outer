@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css?family=Jua&.css');
+
+@base-font-color: #424242;
+@hazy-font-color: #888;
+@hazy-border-color: #ccc;
+@background-color: #f9fafc;
+@standard-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+@pink: #e91e63;
+
+body {
+  background-color: @background-color;
+}
+
+.card {
+  border-radius: 10px;
+  box-shadow: @standard-shadow;
+}
+
+.card .card-title {
+  color: @pink;
+}
+
+.about-body {
+  font-family: 'Jua', sans-serif;
+  color: @base-font-color;
+}
+
+.about-title {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid @hazy-border-color;
+}
+
+code {
+  background-color: #eee;
+  color: @pink;
+  padding: 0px 4px 0px 4px;
+}
+
+img {
+  margin: 10px auto;
+  display: block;
+}
+
+.donate {
+  text-align: center;
+  margin: 20px 0px;
+  border-top: 1px solid @hazy-border-color;
+}

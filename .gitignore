@@ -1,0 +1,6 @@
+node_modules/*
+*.crt
+generated-csr.txt
+generated-private-key.txt
+*.pem
+.DS_Store
